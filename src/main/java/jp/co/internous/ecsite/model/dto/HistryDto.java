@@ -1,27 +1,35 @@
-package jp.co.internous.ecsite.model.domain;
+package jp.co.internous.ecsite.model.dto;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
-public class TblPurchase {
-	
+import jp.co.internous.ecsite.model.domain.TblPurchase;
+
+public class HistryDto {
 	private int id;
-	
 	private int userId;
-	
 	private int goodsId;
-	
 	private String goodsName;
-	
 	private int itemCount;
-	
 	private int total;
+	private String createAt;
 	
-	private Timestamp createAt;
+	public HistryDto() {}
+	
+	public HistryDto(TblPurchase entity) {
+		this.id = entity.getId();
+		this.userId = entity.getUserId();
+		this.goodsName = entity.getGoodsName();
+		this.itemCount = entity.getItemCount();
+		this.total = entity.getTotal();
+		Timestamp d = entity.getCreateAt();
+		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		this.createAt = f.format(d);	
+	}	
 	
 	public int getId() {
 		return id;
 	}
-	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -29,7 +37,6 @@ public class TblPurchase {
 	public int getUserId() {
 		return userId;
 	}
-	
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
@@ -37,7 +44,6 @@ public class TblPurchase {
 	public int getGoodsId() {
 		return goodsId;
 	}
-	
 	public void setGoodsId(int goodsId) {
 		this.goodsId = goodsId;
 	}
@@ -45,7 +51,6 @@ public class TblPurchase {
 	public String getGoodsName() {
 		return goodsName;
 	}
-	
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
 	}
@@ -53,7 +58,6 @@ public class TblPurchase {
 	public int getItemCount() {
 		return itemCount;
 	}
-	
 	public void setItemCount(int itemCount) {
 		this.itemCount = itemCount;
 	}
@@ -61,16 +65,14 @@ public class TblPurchase {
 	public int getTotal() {
 		return total;
 	}
-	
 	public void setTotal(int total) {
 		this.total = total;
 	}
 	
-	public Timestamp getCreateAt() {
+	public String getCreateAt() {
 		return createAt;
 	}
-	
-	public void setCreateAt(Timestamp createAt) {
+	public void setCreateAt(String createAt) {
 		this.createAt = createAt;
 	}
 }

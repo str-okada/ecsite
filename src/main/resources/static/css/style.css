@@ -41,7 +41,8 @@ table{
   border-collapse: collapse;
 }
 
-table td, table th{
+table td, 
+table th{
   border:1px solid grey;
 }
 
@@ -85,7 +86,8 @@ td input{
   width: 85%;
   text-align: right;
 }
-table#cart thead tr th, table#histry thead tr td{
+table#cart thead tr th, 
+table#history thead tr th{
   background: #c0c0c0 !important;
   color: black;
 }

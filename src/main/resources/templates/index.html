@@ -8,7 +8,7 @@
   
   let cartList =[];
   
-  document.addEventListener('DOMContentLoaded', event =>{
+  document.addEventListener('DOMContentLoaded', event => {
     document.getElementById("loginForm").addEventListener("submit", login);
     
     const carBtns = document.querySelectorAll(".cartBtn");
@@ -16,9 +16,83 @@
     carBtns.forEach(btn => {
       btn.addEventListener("click", addCart);
     })
+    
+    document.getElementById("purchaseBtn").addEventListener("click", purchase);
+    
+    document.getElementById("historyBtn").addEventListener("click", showHistory);
+    
   })
   
-  function addCart(enent){
+  
+  function showHistory(event){
+    const postObj = {
+      "userId" : document.getElementById("hiddenUserId").value
+    };
+    
+    fetch("/ecsite/api/history",{
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body:JSON.stringify(postObj),
+    })
+    .then(response => response.text())
+    .then(result =>{
+      const historyList = JSON.parse(result);
+      console.log(result);
+      
+      const tbody = document.querySelector("#history tbody");
+      
+      while(tbody.lastChild){
+        tbody.removeChild(tbody.lastChild);
+      }
+      
+      historyList.forEach((history, index) => {
+        const tr = document.createElement("tr");
+        
+        const keys = ["goodsName","itemCount","createAt"];
+        
+        for(key of keys){
+          const td = document.createElement("td");
+          td.innerText = history[key];
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(error => {
+      console.error("Error : ", error);
+    });
+    
+  }
+  
+  function purchase(event){
+    const postObj = {
+      "userId" : document.getElementById("hiddenUserId").value,
+      "cartList": cartList
+    }
+    
+    fetch("/ecsite/api/purchase", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body:JSON.stringify(postObj),
+    })
+    .then(response => response.text())
+    .then(result =>{
+      alert(`${result}種類の商品を購入しました。`);
+      const countElements = document.querySelectorAll(".count");
+      countElements.forEach(element => {
+        element.value = 0;
+      });
+      
+      initCart();
+      
+      cartList = [];
+    })
+    .catch(error => {
+      console.log("Error: ", error);
+    });
+  }
+  
+  function addCart(event){
     const tdList = event.target.parentElement.parentElement.querySelectorAll("td");
     
     const goodsInfo ={
@@ -105,7 +179,7 @@
     .then(result => {
       const user = JSON.parse(result);
       document.getElementById("welcome").innerText = `ようこそ！ ${user.fullName}さん`;
-      document.getElementById("hiddenUserId").value = user.Id;
+      document.getElementById("hiddenUserId").value = user.id;
       document.querySelector("input[name=userName]").value ="";
       document.querySelector("input[name=password]").value ="";
     }).catch(error => {
@@ -164,8 +238,9 @@
     <tbody>
       
     </tbody>
-    <button id="purchaseBtn">購入</button>
+    
     </table>
+    <button id="purchaseBtn">購入</button>
   </fieldset>
   
   <fieldset>
@@ -178,11 +253,11 @@
           <th>購入日時</th>
         </tr>
       </thead>
-    <tbody>
-      
-    </tbody>
-    <button id="historyBtn">履歴を表示</button>
+        <tbody>
+          
+        </tbody>
     </table>
+    <button id="historyBtn">履歴を表示</button>
   </fieldset>
 
 </body>
